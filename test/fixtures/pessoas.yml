@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  nome: MyString
+  profissao: MyString
+  localizacao: MyString
+  nivel: 1
+  score: 1
+
+two:
+  nome: MyString
+  profissao: MyString
+  localizacao: MyString
+  nivel: 1
+  score: 1
