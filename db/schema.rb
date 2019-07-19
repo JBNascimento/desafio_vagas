@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_19_002145) do
+ActiveRecord::Schema.define(version: 2019_07_19_010903) do
+
+  create_table "candidaturas", force: :cascade do |t|
+    t.integer "pessoa_id"
+    t.integer "vaga_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["pessoa_id"], name: "index_candidaturas_on_pessoa_id"
+    t.index ["vaga_id"], name: "index_candidaturas_on_vaga_id"
+  end
 
   create_table "pessoas", force: :cascade do |t|
     t.string "nome"
