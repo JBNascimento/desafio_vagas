@@ -1,6 +1,7 @@
 module V1
     class CandidaturasController < ApplicationController
-        # Listar todas as candidaturas
+
+      # Listar todas as candidaturas
 
         def index
             candidaturas = Candidatura.order('created_at DESC');
@@ -143,8 +144,8 @@ module V1
 
         # Parametros
         private
-        def candidatura_params
-            params.permit(:pessoa_id, :vaga_id)
+        def candidatura_params         
+           params.tap{ |p| p[:pessoa_id] = p[:id_pessoa] && p[:vaga_id] = p[:id_vaga]}.permit(:id_pessoa, :id_vaga)          
         end
     end
 end
