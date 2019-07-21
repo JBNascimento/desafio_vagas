@@ -3,5 +3,19 @@ Rails.application.routes.draw do
       resources :candidaturas
       resources :pessoas
       resources :vagas
+
+
+
+      resources :vagas do
+        #resources :candidaturas do
+           get "candidaturas/ranking"
+       # end
+      end
+
+    
+      
+      
   end
+
+
 end

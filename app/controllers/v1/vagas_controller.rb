@@ -10,6 +10,21 @@ module V1
             vaga = Vaga.find(params[:id])
             render json: {status: 'SUCCESS', message:'Loaded vaga', data:vaga},status: :ok
         end
+
+        # Listar uma vaga passando ID
+        def show
+            vaga = Vaga.find(params[:id])
+            render json: {status: 'SUCCESS', message:'Loaded vaga', data:vaga},status: :ok
+        end
+      
+
+        def ranking
+            @vaga = Vaga.find(params[:id])
+            @candidaturas = @vaga.candidaturas
+            render json: {status: 'SUCCESS', message:'Lista de vagas carregada', data:@candidaturas},status: :ok
+        end
+
+
         # Criar uma nova vaga
         def create
             vaga = Vaga.new(vaga_params)

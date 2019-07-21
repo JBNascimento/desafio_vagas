@@ -1,18 +1,29 @@
 module V1
     class CandidaturasController < ApplicationController
 
-      # Listar todas as candidaturas
+        # Listar todas as candidaturas
 
         def index
             candidaturas = Candidatura.order('created_at DESC');
             render json: {status: 'SUCCESS', message:'Lista de candidaturas carregada', data:candidaturas},status: :ok
         end
 
+
         # Listar uma candidatura passando ID
 
         def show
             candidatura = Candidatura.find(params[:id])
             render json: {status: 'SUCCESS', message:'Loaded candidatura', data:candidatura},status: :ok
+        end
+
+        # Listar usuários em um ranking
+
+        def ranking
+            @candidatura = Candidatura.where(:vaga_id => Pessoa.find(params[:vaga_id]))             
+          
+            @candidatos= Pessoa.find(@candidatura.pluck(:pessoa_id)).sort_by{|p| p.score}.reverse             
+             
+            render json: {status: 'SUCCESS', message:'Loaded candidatura', data:@candidatos},status: :ok
         end
 
         # Criar uma nova candidatura
@@ -22,7 +33,7 @@ module V1
             if candidatura.save
                 pessoa = Pessoa.find(params[:pessoa_id])
 
-                # Adiciona o score em pessoa
+        # Adiciona o score em pessoa
                 pessoa.update_attributes(score: score)
 
 
@@ -145,7 +156,7 @@ module V1
         # Parametros
         private
         def candidatura_params         
-           params.tap{ |p| p[:pessoa_id] = p[:id_pessoa] && p[:vaga_id] = p[:id_vaga]}.permit(:id_pessoa, :id_vaga)          
+           params.tap{ |p| p[:pessoa_id] = p[:id_pessoa] and p[:vaga_id] = p[:id_vaga]}.permit(:id_pessoa, :id_vaga)          
         end
     end
 end
