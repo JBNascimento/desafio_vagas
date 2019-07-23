@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_19_010903) do
+ActiveRecord::Schema.define(version: 2019_07_23_015600) do
 
   create_table "candidaturas", force: :cascade do |t|
     t.integer "pessoa_id"
     t.integer "vaga_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "score"
     t.index ["pessoa_id"], name: "index_candidaturas_on_pessoa_id"
     t.index ["vaga_id"], name: "index_candidaturas_on_vaga_id"
   end
@@ -26,7 +27,6 @@ ActiveRecord::Schema.define(version: 2019_07_19_010903) do
     t.string "profissao"
     t.string "localizacao"
     t.integer "nivel"
-    t.integer "score"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

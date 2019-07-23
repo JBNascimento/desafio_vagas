@@ -1,11 +1,11 @@
 module V1
     class CandidaturasController < ApplicationController
-
+     
         # Listar todas as candidaturas
 
         def index
             candidaturas = Candidatura.order('created_at DESC');
-            render json: {status: 'SUCCESS', message:'Lista de candidaturas carregada', data:candidaturas},status: :ok
+            render json: {status: 'SUCCESS!', message:'Lista de candidaturas carregada', data:candidaturas},status: :ok
         end
 
 
@@ -13,33 +13,63 @@ module V1
 
         def show
             candidatura = Candidatura.find(params[:id])
-            render json: {status: 'SUCCESS', message:'Loaded candidatura', data:candidatura},status: :ok
+            render json: {status: 'SUCCESS!', message:'Loaded candidatura', data:candidatura},status: :ok
         end
 
         # Listar usuários em um ranking
 
         def ranking
-            @candidatura = Candidatura.where(:vaga_id => Pessoa.find(params[:vaga_id]))             
+            #@candidatura = Candidatura.where(:vaga_id => Pessoa.find(params[:vaga_id]))   
+            
+         
           
-            @candidatos= Pessoa.find(@candidatura.pluck(:pessoa_id)).sort_by{|p| p.score}.reverse             
-             
-            render json: {status: 'SUCCESS', message:'Loaded candidatura', data:@candidatos},status: :ok
+            #@candidatos = Pessoa.find(@candidatura.collect(&:pessoa_id))#sort_by{|p| p.score}.reverse 
+            
+            @response = Candidatura.select(Arel.star).joins(
+              Candidatura.arel_table.join(Pessoa.arel_table).on(
+              Candidatura.arel_table[:pessoa_id].eq(Pessoa.arel_table[:id])
+              ).join_sources
+              ).where(:vaga_id => Pessoa.find(params[:vaga_id]))
+              .order(:score).reverse_order.pluck(:nome, :profissao, :localizacao, :nivel, :score)
+              .map { |nome, profissao, localizacao, nivel, score| {
+              nome: nome, profissao: profissao, localizacao: localizacao, nivel: nivel, score: score 
+              } }
+              
+              
+              render :json => @response
+              
+              
+        #respond_do do |format|
+       # render :json => @response.sort_by{|p| p.score}.reverse, :only =>[:nome, :profissao, :localizacao, :nivel, :score], :only =>[:nome, :profissao, :localizacao, :nivel, :score]  
+           #format.json { render :json => @response.sort_by{|p| p.score}.reverse, :except =>[:id, :pessoa_id, :vaga_id, :created_at, :updated_at] }
+       # end
+            #@saida =  @candidatos.pluck(:nome, :profissao, :localizacao, :nivel, :score)
+            
+
+          #  @saida1 = [:nome => "Teste", :profissao => "TesteS"]
+
+
+           # render :json => @teste, :except =>[:id, :created_at, :updated_at]
         end
 
         # Criar uma nova candidatura
 
         def create
+           
+            
             candidatura = Candidatura.new(candidatura_params)
             if candidatura.save
                 pessoa = Pessoa.find(params[:pessoa_id])
 
         # Adiciona o score em pessoa
-                pessoa.update_attributes(score: score)
+              #  pessoa.update_attributes(score: score)
+                candidatura.update_attributes(score: score)
 
 
-                render json: {status: 'SUCCESS', message:'Saved candidatura', data:candidatura},status: :ok
+
+                render json: {status: 'SUCCESS!', message:'Saved candidatura', data:candidatura},status: :ok
             else
-                render json: {status: 'ERROR', message:'Candidatura not saved', data:candidatura.errors},status: :unprocessable_entity
+                render json: {status: 'ERROR!', message:'Candidatura not saved', data:candidatura.errors},status: :unprocessable_entity
             end
         end
 
@@ -48,7 +78,7 @@ module V1
         def destroy
             candidatura = Candidatura.find(params[:id])
             candidatura.destroy
-            render json: {status: 'SUCCESS', message:'Deleted candidatura', data:candidatura},status: :ok
+            render json: {status: 'SUCCESS!', message:'Deleted candidatura', data:candidatura},status: :ok
         end
 
      
