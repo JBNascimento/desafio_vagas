@@ -5,7 +5,7 @@ module V1
 
         def index
             candidaturas = Candidatura.order('created_at DESC');
-            render json: {status: 'SUCCESS!', message:'Lista de candidaturas carregada', data:candidaturas},status: :ok
+            render json: {status: 'SUCCESSO!', message:'Lista de candidaturas carregada com sucesso!', data:candidaturas},status: :ok
         end
 
 
@@ -18,13 +18,7 @@ module V1
 
         # Listar usuários em um ranking
 
-        def ranking
-            #@candidatura = Candidatura.where(:vaga_id => Pessoa.find(params[:vaga_id]))   
-            
-         
-          
-            #@candidatos = Pessoa.find(@candidatura.collect(&:pessoa_id))#sort_by{|p| p.score}.reverse 
-            
+        def ranking          
             @response = Candidatura.select(Arel.star).joins(
               Candidatura.arel_table.join(Pessoa.arel_table).on(
               Candidatura.arel_table[:pessoa_id].eq(Pessoa.arel_table[:id])
@@ -36,41 +30,30 @@ module V1
               } }
               
               
-              render :json => @response
-              
-              
-        #respond_do do |format|
-       # render :json => @response.sort_by{|p| p.score}.reverse, :only =>[:nome, :profissao, :localizacao, :nivel, :score], :only =>[:nome, :profissao, :localizacao, :nivel, :score]  
-           #format.json { render :json => @response.sort_by{|p| p.score}.reverse, :except =>[:id, :pessoa_id, :vaga_id, :created_at, :updated_at] }
-       # end
-            #@saida =  @candidatos.pluck(:nome, :profissao, :localizacao, :nivel, :score)
-            
-
-          #  @saida1 = [:nome => "Teste", :profissao => "TesteS"]
-
-
-           # render :json => @teste, :except =>[:id, :created_at, :updated_at]
-        end
+              render :json => @response            
+        end 
+         
 
         # Criar uma nova candidatura
+          
+        def create          
+          candidatura = Candidatura.new(candidatura_params)
+          
+          if (Candidatura.where(:pessoa_id => candidatura.id_pessoa).where(:vaga_id => candidatura.id_vaga)).present?
+              render json: {status: 'ERRO!', message:'O usuário já se candidatou para esta vaga.', data:candidatura.errors},status: :unprocessable_entity
+          else
 
-        def create
-           
-            
-            candidatura = Candidatura.new(candidatura_params)
-            if candidatura.save
-                pessoa = Pessoa.find(params[:pessoa_id])
+              if candidatura.save
 
-        # Adiciona o score em pessoa
-              #  pessoa.update_attributes(score: score)
-                candidatura.update_attributes(score: score)
+                # Adiciona o score em pessoa
 
+                  candidatura.update_attributes(score: user_score)
 
-
-                render json: {status: 'SUCCESS!', message:'Saved candidatura', data:candidatura},status: :ok
-            else
-                render json: {status: 'ERROR!', message:'Candidatura not saved', data:candidatura.errors},status: :unprocessable_entity
-            end
+                  render json: {status: 'SUCCESSO!', message:'Candidatura efetuada com sucesso!', data:candidatura},status: :ok
+              else
+                  render json: {status: 'ERRO!', message:'Houve um erro ao processar a candidatura. Tente novamente mais tarde.', data:candidatura.errors},status: :unprocessable_entity
+              end
+          end
         end
 
         # Excluir pessoa
@@ -78,73 +61,67 @@ module V1
         def destroy
             candidatura = Candidatura.find(params[:id])
             candidatura.destroy
-            render json: {status: 'SUCCESS!', message:'Deleted candidatura', data:candidatura},status: :ok
+            render json: {status: 'SUCCESSO!', message:'Candidatura removida com sucesso.', data:candidatura},status: :ok
         end
-
-     
-        
+           
         # Algorítmo de Dijkstra para calcular a menor distância entre as localizações
         
         class Graph
-                Vertex = Struct.new(:name, :neighbours, :dist, :prev)
-               
-                def initialize(graph)
-                  @vertices = Hash.new{|h,k| h[k]=Vertex.new(k,[],Float::INFINITY)}
-                  @edges = {}
-                  graph.each do |(v1, v2, dist)|
-                    @vertices[v1].neighbours << v2
-                    @vertices[v2].neighbours << v1
-                    @edges[[v1, v2]] = @edges[[v2, v1]] = dist
-                  end
-                  @dijkstra_source = nil
+            Vertex = Struct.new(:name, :neighbours, :dist, :prev)
+            
+            def initialize(graph)
+                @vertices = Hash.new{|h,k| h[k]=Vertex.new(k,[],Float::INFINITY)}
+                @edges = {}
+                graph.each do |(v1, v2, dist)|
+                   @vertices[v1].neighbours << v2
+                   @vertices[v2].neighbours << v1
+                   @edges[[v1, v2]] = @edges[[v2, v1]] = dist
                 end
-               
-                def dijkstra(source)
-                  return  if @dijkstra_source == source
-                  q = @vertices.values
-                  q.each do |v|
-                    v.dist = Float::INFINITY
-                    v.prev = nil
-                  end
-                  @vertices[source].dist = 0
-                  until q.empty?
-                    u = q.min_by {|vertex| vertex.dist}
-                    break if u.dist == Float::INFINITY
-                    q.delete(u)
-                    u.neighbours.each do |v|
-                      vv = @vertices[v]
-                      if q.include?(vv)
-                        alt = u.dist + @edges[[u.name, v]]
-                        if alt < vv.dist
-                          vv.dist = alt
-                          vv.prev = u.name
-                        end
-                      end
-                    end
-                  end
-                  @dijkstra_source = source
+                @dijkstra_source = nil
+            end
+            
+            def dijkstra(source)
+                return  if @dijkstra_source == source
+                q = @vertices.values
+                q.each do |v|
+                   v.dist = Float::INFINITY
+                   v.prev = nil
                 end
-               
-                def shortest_path(source, target)
-                  dijkstra(source)
-                  path = []
-                  u = target
-                  while u
-                    path.unshift(u)
-                    u = @vertices[u].prev
-                  end
-                  return path, @vertices[target].dist
-                end
-               
-                def to_s
-                  "#<%s vertices=%p edges=%p>" % [self.class.name, @vertices.values, @edges] 
-                end
+                @vertices[source].dist = 0
+                until q.empty?
+                   u = q.min_by {|vertex| vertex.dist}
+                   break if u.dist == Float::INFINITY
+                   q.delete(u)
+                   u.neighbours.each do |v|
+                     vv = @vertices[v]
+                     if q.include?(vv)
+                       alt = u.dist + @edges[[u.name, v]]
+                       if alt < vv.dist
+                         vv.dist = alt
+                         vv.prev = u.name
+                       end
+                     end
+                   end
+                 end
+                 @dijkstra_source = source
+               end
+              
+               def shortest_path(source, target)
+                 dijkstra(source)
+                 path = []
+                 u = target
+                 while u
+                   path.unshift(u)
+                   u = @vertices[u].prev
+                 end
+                 return path, @vertices[target].dist
+            end            
         end
                
-               
+             
         # Calculando o score do candidato
 
-        def score
+        def user_score
             pessoa = Pessoa.find(params[:pessoa_id])
             vaga = Vaga.find(params[:vaga_id])
                        
@@ -183,7 +160,7 @@ module V1
 
 
 
-        # Parametros
+        #Parâmetros aceitos
         private
         def candidatura_params         
            params.tap{ |p| p[:pessoa_id] = p[:id_pessoa] and p[:vaga_id] = p[:id_vaga]}.permit(:id_pessoa, :id_vaga)          
