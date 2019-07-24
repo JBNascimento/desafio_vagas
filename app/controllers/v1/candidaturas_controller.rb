@@ -126,6 +126,7 @@ module V1
             vaga = Vaga.find(params[:vaga_id])
                        
         # Distância entre as localizações e aplicando Dijkstra
+        
             g = Graph.new([ [:a, :b, 5],
                             [:b, :c, 7],
                             [:b, :d, 3],

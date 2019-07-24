@@ -6,6 +6,7 @@ module V1
             vagas = Vaga.order('created_at DESC');
             render json: {status: 'SUCCESS', message:'Lista de vagas carregada', data:vagas},status: :ok
         end
+        
         # Listar uma vaga passando ID
         
         def show
@@ -13,29 +14,25 @@ module V1
             render json: {status: 'SUCCESS', message:'Loaded vaga', data:vaga},status: :ok
         end
 
-        # Listar uma vaga passando ID
-
-        def show
-            vaga = Vaga.find(params[:id])
-            render json: {status: 'SUCCESS', message:'Loaded vaga', data:vaga},status: :ok
-        end
-      
-
-        def ranking
-            @vaga = Vaga.find(params[:id])
-            @candidaturas = @vaga.candidaturas
-            render json: {status: 'SUCCESS', message:'Lista de vagas carregada', data:@candidaturas},status: :ok
-        end
-
+     
         # Criar uma nova vaga
 
         def create
             vaga = Vaga.new(vaga_params)
-            if vaga.save
-                render json: {status: 'SUCCESS', message:'Saved vaga', data:vaga},status: :ok
+            if ('A'..'E').include?(vaga.localizacao)
+                if vaga.nivel < 6
+                    if vaga.save
+                        render json: {status: 'SUCCESSO', message:'Vaga adicionada com sucesso!', data:vaga},status: :ok
+                    else
+                        render json: {status: 'ERRO', message:'A vaga não pode ser salva. tente novamente mais tarde', data:vaga.errors},status: :unprocessable_entity
+                    end
+                else
+                    render json: {status: 'ERRO', message:'O nível da vaga deve ser um dos seguintes valores: 1,2,3,4 ou 5', data:vaga.errors},status: :unprocessable_entity
+                end
             else
-                render json: {status: 'ERROR', message:'Vaga not saved', data:vaga.errors},status: :unprocessable_entity
-            end
+                render json: {status: 'ERRO', message:'A localização da vaga deve ser um dos seguintes valores: A,B,C,D ou E', data:vaga.errors},status: :unprocessable_entity
+            end   
+
         end
 
         # Excluir vaga

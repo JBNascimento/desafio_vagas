@@ -18,7 +18,7 @@ module V1
 
         def create
             pessoa = Pessoa.new(pessoa_params)
-
+            if ('A'..'E').include?(pessoa.localizacao)
                  if pessoa.nivel < 6
                     if pessoa.save
                         render json: {status: 'SUCCESSO', message:'Usuário cadastrado com sucesso!', data:pessoa},status: :ok
@@ -28,6 +28,9 @@ module V1
                 else
                     render json: {status: 'ERRO', message:'O nível do usuário deve ser um dos seguintes valores: 1,2,3,4 ou 5', data:pessoa.errors},status: :unprocessable_entity
                 end
+            else
+                render json: {status: 'ERRO', message:'A localização do usuário deve ser um dos seguintes valores: A,B,C,D ou E', data:pessoa.errors},status: :unprocessable_entity
+            end
     
         end
 
