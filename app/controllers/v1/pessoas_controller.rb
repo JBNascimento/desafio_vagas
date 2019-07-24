@@ -19,7 +19,7 @@ module V1
         def create
             pessoa = Pessoa.new(pessoa_params)
             if ('A'..'E').include?(pessoa.localizacao)
-                 if pessoa.nivel < 6
+                 if (1..5).include?(pessoa.nivel)
                     if pessoa.save
                         render json: {status: 'SUCCESSO', message:'Usuário cadastrado com sucesso!', data:pessoa},status: :ok
                     else

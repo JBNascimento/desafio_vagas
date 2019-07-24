@@ -6,7 +6,7 @@ module V1
             vagas = Vaga.order('created_at DESC');
             render json: {status: 'SUCCESS', message:'Lista de vagas carregada', data:vagas},status: :ok
         end
-        
+
         # Listar uma vaga passando ID
         
         def show
@@ -20,7 +20,7 @@ module V1
         def create
             vaga = Vaga.new(vaga_params)
             if ('A'..'E').include?(vaga.localizacao)
-                if vaga.nivel < 6
+                if (1..5).include?(vaga.nivel)   
                     if vaga.save
                         render json: {status: 'SUCCESSO', message:'Vaga adicionada com sucesso!', data:vaga},status: :ok
                     else
