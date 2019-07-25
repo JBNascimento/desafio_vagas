@@ -9,12 +9,12 @@ Um recrutador precisa analisar as candidaturas recebidas para vagas de emprego. 
 O desafio é desenvolver uma ferramenta para auxiliar o recrutador, indicando as pessoas mais aderentes para cada vaga. A especificações da API podem ser acessadas aqui: https://github.com/VAGAScom/desafio-tecnico/blob/master/desafio-tecnico.md
 
 ## Requisitos
-- Ruby on Rails   
-- Banco de Dados SQLite
+####Ruby on Rails   
+####Banco de Dados SQLite
 
-  Para a instalação dos requisitos no Ubuntu -> https://gorails.com/setup/ubuntu/19.04
-  Para instação dos requisitos no OSX -> https://gorails.com/setup/osx/10.14-mojave
-  Para instalação dos requisitos no Windows -> https://gorails.com/setup/windows/10
+  - Para a instalação dos requisitos no Ubuntu -> https://gorails.com/setup/ubuntu/19.04
+  - Para instação dos requisitos no OSX -> https://gorails.com/setup/osx/10.14-mojave
+  - Para instalação dos requisitos no Windows -> https://gorails.com/setup/windows/10
   
 # Instalação
 
@@ -22,10 +22,12 @@ O desafio é desenvolver uma ferramenta para auxiliar o recrutador, indicando as
 ```
 git clone https://github.com/JBNascimento/desafio_vagas.git
 cd desafio_vagas
+gem install bundler
+bundle install
 rake db:migrate
 
 E em seguida para rodar o servidor Puma:
-rails s
+rails s -p 9000
 
 ```
 
@@ -42,7 +44,7 @@ No campo Headers do Postman, adicione a KEY "Content-Type e VALUE "application/j
 
 **Request:** 
 
-```POST http://localhost:3000/v1/vagas```
+```POST http://localhost:9000/v1/vagas```
 
 + Body:
 
@@ -60,7 +62,7 @@ No campo Headers do Postman, adicione a KEY "Content-Type e VALUE "application/j
 
 **Request:** 
 
-```POST http://localhost:3000/v1/pessoas```
+```POST http://localhost:9000/v1/pessoas```
 
 + Body:
 
@@ -79,7 +81,7 @@ Neste endpoint você deverá registar a candidatura do candidato para a vaga em 
 
 **Request:** 
 
-```POST http://localhost:3000/v1/candidaturas```
+```POST http://localhost:9000/v1/candidaturas```
 
 + Body:
 
