@@ -9,8 +9,8 @@ Um recrutador precisa analisar as candidaturas recebidas para vagas de emprego. 
 O desafio é desenvolver uma ferramenta para auxiliar o recrutador, indicando as pessoas mais aderentes para cada vaga. A especificações da API podem ser acessadas aqui: https://github.com/VAGAScom/desafio-tecnico/blob/master/desafio-tecnico.md
 
 ## Requisitos
-### Ruby
-### Banco de Dados SQLite
+#### Ruby
+#### Banco de Dados SQLite
 
   - Para a instalação dos requisitos no Ubuntu -> https://gorails.com/setup/ubuntu/19.04
   - Para instação dos requisitos no OSX -> https://gorails.com/setup/osx/10.14-mojave
