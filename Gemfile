@@ -34,6 +34,7 @@ group :development, :test do
 
   # Custom gems
   gem 'rspec-rails', '~> 3.8', '>= 3.8.2'
+  gem 'factory_bot_rails'
 end
 
 group :development do

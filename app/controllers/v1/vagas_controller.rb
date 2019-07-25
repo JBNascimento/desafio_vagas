@@ -19,11 +19,11 @@ module V1
 
         def create
             vaga = Vaga.new(vaga_params)
-                if vaga.save
-                    render json: {status: 'SUCCESSO', message:'Vaga adicionada com sucesso!', data:vaga},status: :ok
-                else
-                    render json: {status: 'ERRO', message:'Houve um erro ao adicionar a vaga.', data:vaga.errors},status: :unprocessable_entity
-                end
+            if vaga.save
+                render json: {status: 'SUCCESSO', message:'Vaga adicionada com sucesso!', data:vaga},status: :ok
+            else
+                render json: {status: 'ERRO', message:'Houve um erro ao adicionar a vaga.', data:vaga.errors},status: :unprocessable_entity
+            end
         end
 
         # Excluir vaga
