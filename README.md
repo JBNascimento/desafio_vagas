@@ -2,7 +2,7 @@
 
 ## Introdução
 
-## Recrutando candidatos
+### Recrutando candidatos
 
 Um recrutador precisa analisar as candidaturas recebidas para vagas de emprego. Dado o grande volume de candidaturas em algumas vagas, olhar um a um seria um trabalho muito demorado.
 
@@ -127,7 +127,7 @@ Neste endpoint você deverá registar a candidatura do candidato para a vaga em 
 
 
 
-## Contato
+### Contato
 ```
 Jeferson Nascimento: jbnascimento@msn.com
 ```
