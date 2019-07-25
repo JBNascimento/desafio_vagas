@@ -51,7 +51,7 @@ module V1
 
                   render json: {status: 'SUCCESSO!', message:'Candidatura efetuada com sucesso!', data:candidatura},status: :ok
               else
-                  render json: {status: 'ERRO!', message:'Houve um erro ao processar a candidatura. Tente novamente mais tarde.', data:candidatura.errors},status: :unprocessable_entity
+                  render json: {status: 'ERRO!', message:'Houve um erro ao processar a candidatura.', data:candidatura.errors},status: :unprocessable_entity
               end
           end
         end

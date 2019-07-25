@@ -19,20 +19,11 @@ module V1
 
         def create
             vaga = Vaga.new(vaga_params)
-            if ('A'..'E').include?(vaga.localizacao)
-                if (1..5).include?(vaga.nivel)   
-                    if vaga.save
-                        render json: {status: 'SUCCESSO', message:'Vaga adicionada com sucesso!', data:vaga},status: :ok
-                    else
-                        render json: {status: 'ERRO', message:'A vaga não pode ser salva. tente novamente mais tarde', data:vaga.errors},status: :unprocessable_entity
-                    end
+                if vaga.save
+                    render json: {status: 'SUCCESSO', message:'Vaga adicionada com sucesso!', data:vaga},status: :ok
                 else
-                    render json: {status: 'ERRO', message:'O nível da vaga deve ser um dos seguintes valores: 1,2,3,4 ou 5', data:vaga.errors},status: :unprocessable_entity
+                    render json: {status: 'ERRO', message:'Houve um erro ao adicionar a vaga.', data:vaga.errors},status: :unprocessable_entity
                 end
-            else
-                render json: {status: 'ERRO', message:'A localização da vaga deve ser um dos seguintes valores: A,B,C,D ou E', data:vaga.errors},status: :unprocessable_entity
-            end   
-
         end
 
         # Excluir vaga
